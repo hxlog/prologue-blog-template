@@ -1,7 +1,7 @@
 const siteMetadata = {
   title: "Prologue 序章",
   author: "槐序",
-  authorDesc:"想成为创作者",
+  authorDesc:"梦想成为自由职业者",
   publishName: "Prologue",
   headerTitle: "What's past is prologue",
   description:

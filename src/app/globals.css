@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @config '../../tailwind.config.js';
 
@@ -20,13 +20,14 @@
   }
 }
 
-html{
+html {
   word-break: break-word;
 }
 
-
 .katex {
-  font: normal 1.21em KaTeX_Main, serif;
+  font:
+    normal 1.21em KaTeX_Main,
+    serif;
   line-height: 1.2;
   white-space: normal;
   text-indent: 0;
@@ -35,7 +36,6 @@ html{
 .prose a {
   @apply transition-all;
 }
-
 
 span::selection {
   background-color: #00a8dc42;
@@ -48,7 +48,6 @@ span::selection {
 figcaption {
   text-align: center;
 }
-
 
 html.dark .shiki,
 html.dark .shiki span {
