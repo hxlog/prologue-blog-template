@@ -8,7 +8,8 @@ import Comments from "../../../components/comments";
 import Link from "next/link";
 import moment from "moment";
 import Image from "next/image";
-import AboutMe from "../../../components/aboutme"
+import AboutMe from "../../../components/aboutme";
+import { OptimizedHTMLRenderer } from "../../../components/optimized-html-renderer";
 
 
 async function getPostFromParams(params) {
@@ -162,7 +163,7 @@ export default async function PostPage(props) {
             {post.imageDesc != "" ? <p className="text-zinc-500 dark:text-zinc-300">{post.imageDesc}</p>: null}
 
             <hr/>
-            <div dangerouslySetInnerHTML={{ __html: post.body.html }} />
+            <OptimizedHTMLRenderer htmlContent={post.body.html} />
             <p className="prose-sm pt-4">
               {post.lastmod
                 ? `Last Updated: ${moment(post.lastmod).format("LL")}`

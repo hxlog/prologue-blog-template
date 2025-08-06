@@ -1,8 +1,8 @@
 import { Feed } from "feed";
 import siteMetadata from "../../../data/sitemetadata";
 import { allPosts } from "contentlayer/generated";
-import { format } from "date-fns";
 import { compareDesc } from "date-fns";
+import { enhanceFeedContent } from "../../utils/feed-optimizer";
 
 export async function GET() {
   const feed = new Feed({
@@ -35,7 +35,7 @@ export async function GET() {
       feed.addItem({
         title: post.title,
         description: post.description,
-        content: `<p>${post.description}</p> <hr> ${post.body.html} <hr> <a href=${siteMetadata.siteUrl}>${siteMetadata.title}</a> <p>${siteMetadata.description}</p>  <p>作者${siteMetadata.author}</p> <p>${format(new Date(post.publishDate), "yyyy MMMM do")}发布</p>`,
+        content: enhanceFeedContent(post),
         author: {
           name: "槐序",
           email: "hello@prologue.dev",
