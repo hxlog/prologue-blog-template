@@ -1,6 +1,5 @@
 ---
 title: 2024年经济观察：不浪费一场危机
-featured: true
 tags:
   - Economics
 publishDate: 2024-10-02

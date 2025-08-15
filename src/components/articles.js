@@ -17,7 +17,7 @@ export default function HomePage({ articles, mostCommonTag }) {
   const [tabPosition, setTabPosition] = useState(0);
 
   useEffect(() => {
-    if (tabIndex !== 3) {
+    if (tabIndex !== 2) { // Search is now at index 2 in the new TabGroup
       setSearchQuery("");
       setSearchResults([]);
       setIsSearching(false);
@@ -48,14 +48,21 @@ export default function HomePage({ articles, mostCommonTag }) {
   };
 
   const filteredArticles = (filter) => {
+    const featuredArticles = articles.filter((article) => article.featured);
+    const featuredSlugs = featuredArticles.map((article) => article.slug);
+    
     const baseArticles =
       isSearching && searchQuery.trim()
         ? searchResults
         : filter === "featured"
-          ? articles.filter((article) => article.featured)
-          : filter === "tag"
-            ? articles.filter((article) => article.tags.includes(mostCommonTag))
-            : articles;
+          ? featuredArticles
+          : filter === "latest"
+            ? articles.filter((article) => !featuredSlugs.includes(article.slug))
+            : filter === "tag"
+              ? articles.filter((article) => 
+                  article.tags.includes(mostCommonTag) && !featuredSlugs.includes(article.slug)
+                )
+              : articles;
     return baseArticles.slice(0, visibleCount);
   };
 
@@ -117,10 +124,21 @@ export default function HomePage({ articles, mostCommonTag }) {
 
   return (
     <div className="w-full max-w-4xl">
+      {/* Featured Section - Standalone */}
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50 mb-4 border-b dark:border-zinc-800 border-zinc-200 pb-2">
+          Featured
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {renderArticles("featured")}
+        </div>
+      </div>
+
+      {/* Main TabGroup for Latest, Tag, and Search */}
       <TabGroup selectedIndex={tabIndex} onChange={setTabIndex}>
         <div>
-          <TabList className="flex border-b   dark:border-zinc-800 border-zinc-200  pb-2 justify-between sticky top-0">
-            {["Featured", "Latest", mostCommonTag, "Search"].map(
+          <TabList className="flex border-b dark:border-zinc-800 border-zinc-200 pb-2 justify-between sticky top-0">
+            {["Latest", mostCommonTag, "Search"].map(
               (label, index) => (
                 <Tab
                   key={index}
@@ -145,7 +163,7 @@ export default function HomePage({ articles, mostCommonTag }) {
           </TabList>
         </div>
         <TabPanels className="mt-6">
-          {["featured", "latest", "tag", "search"].map((filter, index) => (
+          {["latest", "tag", "search"].map((filter, index) => (
             <TabPanel key={index} className="space-y-6">
               {filter === "search" && isSearching && (
                 <input
@@ -153,7 +171,7 @@ export default function HomePage({ articles, mostCommonTag }) {
                   placeholder="Search articles..."
                   value={searchQuery}
                   onChange={(e) => handleSearch(e.target.value)}
-                  className="w-full p-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-xs  focus:outline-hidden focus:ring-2 focus:ring-zinc-400 dark:focus:ring-zinc-500"
+                  className="w-full p-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-xs focus:outline-hidden focus:ring-2 focus:ring-zinc-400 dark:focus:ring-zinc-500"
                 />
               )}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
