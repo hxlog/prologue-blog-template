@@ -1,15 +1,17 @@
-import Image from "next/image";
 import { useMDXComponent } from "next-contentlayer2/hooks";
 import Link from "next/link";
+import Image from "next/image";
 
 const ResponsiveImage = (props) => (
   <Image
     alt={props.alt}
-    width={1920}
-    height={1080}
+    src={props.src}
+    loading="lazy"
+    decoding="async"
+    data-lightbox="true"
+    className={(props.className || "") + " lightbox-image cursor-zoom-in rounded-lg mx-auto"}
+    style={{ maxWidth: "100%", height: "auto" }}
     {...props}
-    className="drop-shadow-xs rounded-sm
-"
   />
 );
 

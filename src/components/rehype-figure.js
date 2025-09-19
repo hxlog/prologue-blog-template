@@ -30,6 +30,13 @@ export default function rehypeFigure(options = {}) {
 			node.children = figure.children;
 			node.properties = figure.properties;
 		});
+
+		// Add lightbox attributes to images
+		visit(tree, { tagName: "img" }, (node) => {
+			if (!node.properties) node.properties = {};
+			node.properties.className = (node.properties.className || "") + " lightbox-image cursor-zoom-in";
+			node.properties["data-lightbox"] = "true";
+		});
 	};
 }
 
@@ -49,10 +56,24 @@ function isImageLink({ tagName }) {
 	return tagName === "a";
 }
 
-function createFigure({ properties }, options) {
-	const props = options.className ? { class: options.className } : {};
-	return h("figure", props, [
-		h("img", { ...properties }),
-		h("figcaption", properties.alt)
+function createFigure(image) {
+	const figure = h("figure", { class: "my-8" }, [
+		h("img", {
+			...image.properties,
+			loading: "lazy",
+			decoding: "async",
+			class: "rounded-lg mx-auto lightbox-image cursor-zoom-in",
+			"data-lightbox": "true"
+		})
 	]);
+
+	if (image.properties.alt) {
+		figure.children.push(
+			h("figcaption", { class: "text-center text-sm text-gray-600 dark:text-gray-400 mt-2" }, [
+				image.properties.alt
+			])
+		);
+	}
+
+	return figure;
 }

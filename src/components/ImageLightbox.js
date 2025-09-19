@@ -1,0 +1,81 @@
+'use client';
+
+import { useState, useEffect, useRef } from 'react';
+import Lightbox from 'yet-another-react-lightbox';
+import 'yet-another-react-lightbox/styles.css';
+
+function findImageElement(target) {
+  let el = target;
+  while (el && el !== document.body) {
+    if (
+      el.nodeType === 1 &&
+      ((el.tagName === 'IMG' && typeof el.className === 'string' && el.className.includes('lightbox-image')) ||
+        (typeof el.className === 'string' && el.className.includes('lightbox-image') && el.querySelector && el.querySelector('img')))
+    ) {
+      return el.tagName === 'IMG' ? el : el.querySelector('img');
+    }
+    el = el.parentElement;
+  }
+  return null;
+}
+
+function getCaption(img) {
+  let figure = img.parentElement;
+  while (figure && figure.tagName !== 'FIGURE') {
+    figure = figure.parentElement;
+  }
+  if (figure) {
+    const caption = figure.querySelector('figcaption');
+    if (caption && caption.textContent.trim()) return caption.textContent.trim();
+  }
+  return img.alt || '';
+}
+
+export default function ImageLightbox() {
+  const [open, setOpen] = useState(false);
+  const [slides, setSlides] = useState([]);
+  const [index, setIndex] = useState(0);
+  const imagesRef = useRef([]);
+
+  useEffect(() => {
+    imagesRef.current = Array.from(document.querySelectorAll('img.lightbox-image'));
+  });
+
+  useEffect(() => {
+    const handleClick = (e) => {
+      const img = findImageElement(e.target);
+      if (img) {
+        const images = imagesRef.current;
+        const slides = images.map((el) => ({
+          src: el.src,
+          alt: el.alt,
+          caption: getCaption(el),
+        }));
+        const idx = images.findIndex((el) => el === img);
+        if (idx !== -1) {
+          setSlides(slides);
+          setIndex(idx);
+          setOpen(true);
+        }
+      }
+    };
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  }, []);
+
+  return (
+    <Lightbox
+      open={open}
+      close={() => setOpen(false)}
+      slides={slides}
+      index={index}
+      on={{ view: ({ index }) => setIndex(index) }}
+      render={{
+        slideFooter: ({ slide }) =>
+          slide.caption ? (
+            <div className="yarl__slide_footer">{slide.caption}</div>
+          ) : null,
+      }}
+    />
+  );
+}

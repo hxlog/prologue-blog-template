@@ -2,6 +2,7 @@ import "./globals.css";
 import { Providers } from "../components/providers";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
+import ImageLightbox from "../components/ImageLightbox";
 import siteMetadata from "../../data/sitemetadata";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -41,6 +42,7 @@ export default function RootLayout({ children }) {
             <main>{children}</main>
             <Footer />
           </div>
+          <ImageLightbox />
         </Providers>
         <Analytics />
         <SpeedInsights />
