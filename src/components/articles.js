@@ -18,18 +18,23 @@ export default function HomePage({ articles, mostCommonTag }) {
 
   useEffect(() => {
     if (tabIndex !== 2) {
-      // Search is now at index 2 in the new TabGroup
-      setSearchQuery("");
-      setSearchResults([]);
-      setIsSearching(false);
+      const t = setTimeout(() => {
+        setSearchQuery("");
+        setSearchResults([]);
+        setIsSearching(false);
+      }, 0);
+      return () => clearTimeout(t);
     }
   }, [tabIndex]);
 
   useEffect(() => {
     if (tabRefs.current.length > 0) {
-      const widths = tabRefs.current.map((el) => el.offsetWidth);
-      setTabWidths(widths);
-      setTabPosition(tabRefs.current[tabIndex].offsetLeft);
+      const raf = requestAnimationFrame(() => {
+        const widths = tabRefs.current.map((el) => el.offsetWidth);
+        setTabWidths(widths);
+        setTabPosition(tabRefs.current[tabIndex]?.offsetLeft || 0);
+      });
+      return () => cancelAnimationFrame(raf);
     }
   }, [tabIndex]);
 

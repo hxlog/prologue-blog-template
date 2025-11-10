@@ -7,8 +7,13 @@ const ThemeSwitch = () => {
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme, resolvedTheme } = useTheme();
 
-  // When mounted on client, now we can show the UI
-  useEffect(() => setMounted(true), []);
+  // When mounted on client, now we can show the UI.
+  // Defer the setState call so it is not called synchronously inside the effect
+  // (prevents cascading renders and satisfies the ESLint rule).
+  useEffect(() => {
+    const t = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(t);
+  }, []);
 
   return (
     <button

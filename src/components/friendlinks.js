@@ -1,16 +1,36 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Comments from "./comments";
 
-export default function FriendLinks({ friends }) {
-  const [shuffledFriends, setShuffledFriends] = useState([]);
+// Small, fast, deterministic PRNG (mulberry32) — pure function, safe to use during render
+function mulberry32(seed) {
+  return function () {
+    let t = (seed += 0x6d2b79f5);
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
 
+export default function FriendLinks({ friends }) {
+  const [seed, setSeed] = useState(null);
   useEffect(() => {
-    setShuffledFriends(friends.sort(() => Math.random() - 0.5));
-  }, [friends]);
+    const id = setTimeout(() => setSeed(Math.floor(Math.random() * 2 ** 31)), 0);
+    return () => clearTimeout(id);
+  }, []);
+
+  const shuffledFriends = useMemo(() => {
+    const arr = [...(friends || [])];
+    if (seed === null) return arr;
+    const rnd = mulberry32(seed);
+    return arr
+      .map((f) => ({ f, key: Math.floor(rnd() * 2 ** 31) }))
+      .sort((a, b) => a.key - b.key)
+      .map((x) => x.f);
+  }, [friends, seed]);
 
   return (
     <div className="container mx-auto p-4 py-12">
@@ -33,7 +53,6 @@ export default function FriendLinks({ friends }) {
               height={80}
               width={80}
               alt={friend.name}
-              quality={50}
               className="w-20 h-20 object-cover rounded-full mx-auto mb-4"
             />
             <h3 className="text-lg font-semibold text-center">{friend.name}</h3>
