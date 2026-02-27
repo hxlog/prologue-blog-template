@@ -151,9 +151,9 @@ export default async function PostPage(props) {
                 {post.description}
               </p>
             )}
-            {post.image != "" ? (
+            {post.image?.trim() ? (
               <Image
-                src={post.image}
+                src={post.image.trim()}
                 width={1920}
                 height={1080}
                 alt={"featured image " + post.title}

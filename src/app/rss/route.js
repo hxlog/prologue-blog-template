@@ -2,21 +2,22 @@ import { Feed } from "feed";
 import siteMetadata from "../../../data/sitemetadata";
 import { allPosts } from "contentlayer/generated";
 import { compareDesc } from "date-fns";
-import { enhanceFeedContent } from "../../components/feed-optimizer";
+import { enhanceFeedContent, getMimeType } from "../../components/feed-optimizer";
 
 export async function GET() {
   const feed = new Feed({
     title: siteMetadata.title,
-    description: `${siteMetadata.description}`,
-    id: `${siteMetadata.siteUrl}`,
-    link: `${siteMetadata.siteUrl}`,
-    favicon: `${siteMetadata.siteUrl}${siteMetadata.favicon}`,
+    description: siteMetadata.description,
+    id: siteMetadata.siteUrl,
+    link: siteMetadata.siteUrl,
+    favicon: `${siteMetadata.siteUrl}/static/favicons/favicon.png`,
     language: siteMetadata.language,
     copyright: "CC BY-NC-SA 4.0",
     updated: new Date(),
-    image: `${siteMetadata.siteUrl}${siteMetadata.favicon}`,
+    image: `${siteMetadata.siteUrl}/static/favicons/avatar.png`,
     generator: "Feed",
     feedLinks: {
+      rss: `${siteMetadata.siteUrl}/rss`,
       json: `${siteMetadata.siteUrl}/jsonfeed`,
       atom: `${siteMetadata.siteUrl}/atomfeed`,
     },
@@ -32,6 +33,10 @@ export async function GET() {
   posts
     .filter((post) => post.draft === false)
     .forEach((post) => {
+      const imageUrl = post.image
+        ? `${siteMetadata.siteUrl}${post.image.trim()}`
+        : `${siteMetadata.siteUrl}/og?title=${encodeURIComponent(post.title)}`;
+
       feed.addItem({
         title: post.title,
         description: post.description,
@@ -44,19 +49,20 @@ export async function GET() {
         id: `${siteMetadata.siteUrl}${post.slug}`,
         link: `${siteMetadata.siteUrl}${post.slug}`,
         date: new Date(post.publishDate),
-        image:
-          post.image == ""
-            ? `${siteMetadata.siteUrl}/og?title=${post.title}`
-            : `${siteMetadata.siteUrl}${post.image}`,
+        image: imageUrl,
+        enclosure: {
+          url: imageUrl,
+          type: getMimeType(imageUrl),
+        },
       });
     });
 
-  const rssFeed = feed.rss2();
+  const rssFeed = feed.rss2().trim();
 
   return new Response(rssFeed, {
     headers: {
-      "Content-Type": "application/xml",
-      "Cache-Control": "private,must-revalidate,max-age=86400", // must revalidate, and must be cached by the client for 1 days
+      "Content-Type": "application/xml; charset=utf-8",
+      "Cache-Control": "public, max-age=0, s-maxage=0",
     },
   });
 }
