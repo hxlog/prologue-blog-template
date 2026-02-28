@@ -5,13 +5,26 @@ import { format } from "date-fns";
  * Get MIME type based on file extension
  */
 export function getMimeType(url) {
-  const urlPath = url.split("?")[0].toLowerCase();
-  if (urlPath.endsWith(".jpg") || urlPath.endsWith(".jpeg")) return "image/jpeg";
-  if (urlPath.endsWith(".png")) return "image/png";
-  if (urlPath.endsWith(".gif")) return "image/gif";
-  if (urlPath.endsWith(".webp")) return "image/webp";
-  if (urlPath.endsWith(".svg")) return "image/svg+xml";
-  return "image/jpeg"; // default
+  if (!url || typeof url !== "string") return "image/png";
+
+  try {
+    const urlPath = url.split("?")[0].toLowerCase();
+
+    // Check for known image extensions
+    if (urlPath.endsWith(".jpg") || urlPath.endsWith(".jpeg")) return "image/jpeg";
+    if (urlPath.endsWith(".png")) return "image/png";
+    if (urlPath.endsWith(".gif")) return "image/gif";
+    if (urlPath.endsWith(".webp")) return "image/webp";
+    if (urlPath.endsWith(".svg")) return "image/svg+xml";
+    if (urlPath.endsWith(".ico")) return "image/x-icon";
+    if (urlPath.endsWith(".bmp")) return "image/bmp";
+
+    // For dynamic image URLs (like /og?title=...), default to PNG
+    // Most OG image generators produce PNG
+    return "image/png";
+  } catch {
+    return "image/png";
+  }
 }
 
 /**
