@@ -1,11 +1,11 @@
 ---
 title: 人生第一次辞职：止损
 tags: ["Finance"]
-publishDate: 2026-03-7 12:00
+publishDate: 2026-3-7 12:00
 featured: true
 description: 作者因职场深度无聊与制度枷锁，执行人生第一笔“止损”——辞职，离开二级市场
 image: /static/images/FXfighter.jpg
-lastmod: 2026-03-7 12:00
+lastmod: 2026-3-7 12:00
 ---
 
 # 写在离职前
