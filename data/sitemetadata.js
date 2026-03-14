@@ -7,7 +7,7 @@ const siteMetadata = {
   description:
     "对当下的反思和批判",
   language: "zh-CN",
-  keywords:['prologue', '序章'],
+  keywords:['prologue', '序章','槐序'],
   siteUrl: "https://prologue.dev",
   siteRepo: "prologue.dev",
   repoid:"R_kgDOHl4HGg",

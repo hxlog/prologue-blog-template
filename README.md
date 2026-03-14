@@ -1,8 +1,8 @@
 # Prologue Blog
 
-Next.js 14 + Tailwindcss + Contentlayer + Markdown Blog
+Next.js 16 + Tailwindcss + Contentlayer + Markdown Blog
 
-这是一个由Next.js生态拼凑而生的博客（笔者没有任何技术）。
+这是一个由Next.js生态拼凑而生的博客（笔者没有任何底层技术）。
 
 ## Features
 
