@@ -16,7 +16,7 @@ className="rounded-full max-w-md mx-auto shadow drop-shadow mt-8 hover:shadow-lg
 
 <p className="text-center text-xl">槐序</p>
 
-<center>00后/梦想成为自由职业者</center>
+<center>00后/大城市里的老鼠/少数派/梦想成为自由职业者</center>
 
 ## 订阅全文输出RSS
 

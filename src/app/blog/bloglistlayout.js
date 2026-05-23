@@ -2,27 +2,24 @@
 
 import PostCard from "../../components/postcard";
 import Pagination from "../../components/pagination";
-import { allPosts } from "contentlayer/generated";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { lazy } from "react";
 
 const POSTS_PER_PAGE = 10;
-const tagsCount = {};
 const SearchBar = lazy(() => import("../../components/searchbar"));
-allPosts.forEach((item) => {
-  item.tags.forEach((tag) => {
-    tagsCount[tag] = (tagsCount[tag] || 0) + 1;
-  });
-});
-const sortedTags = Object.keys(tagsCount).sort(
-  (a, b) => tagsCount[b] - tagsCount[a]
-);
-const PostsLayout = ({ pagination, initialDisplayPosts }) => {
+
+const PostsLayout = ({
+  pagination,
+  initialDisplayPosts,
+  posts,
+  tagCounts = {},
+  sortedTags = [],
+}) => {
   const displayPosts =
     initialDisplayPosts && initialDisplayPosts.length > 0
       ? initialDisplayPosts
-      : allPosts;
+      : posts || [];
   const pathname = usePathname();
   return (
     <>
@@ -43,7 +40,7 @@ const PostsLayout = ({ pagination, initialDisplayPosts }) => {
                   }`}
                   href={`/tags/${tag}`}
                 >
-                  {tag}({tagsCount[tag]})
+                  {tag}({tagCounts[tag]})
                 </Link>
               ))}
             </div>
@@ -54,7 +51,7 @@ const PostsLayout = ({ pagination, initialDisplayPosts }) => {
                 .filter((post) => post.draft === false)
                 .slice(0, POSTS_PER_PAGE)
                 .map((post) => (
-                  <article key={post._id} className="">
+                  <article key={post._id || post.slug} className="">
                     <PostCard
                       title={post.title}
                       slug={post.slug}

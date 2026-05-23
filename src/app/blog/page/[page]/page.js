@@ -1,6 +1,8 @@
 import { allPosts } from "contentlayer/generated"
 import PostsLayout from "../../bloglistlayout"
 import { compareDesc } from 'date-fns'
+import { tagCounts, sortedTags } from "../../../../lib/tag-counts"
+import PageTransition from "../../../../components/page-transition"
 
 const POSTS_PER_PAGE = 10
 
@@ -29,5 +31,9 @@ export default async function PostsPage({ params }) {
     totalPages: Math.ceil(posts.length / POSTS_PER_PAGE),
   }
 
-  return  <PostsLayout posts={posts} pagination={pagination} initialDisplayPosts={initialDisplayPosts} /> 
+  return (
+    <PageTransition>
+      <PostsLayout posts={posts} pagination={pagination} initialDisplayPosts={initialDisplayPosts} tagCounts={tagCounts} sortedTags={sortedTags} />
+    </PageTransition>
+  )
 }

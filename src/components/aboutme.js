@@ -3,12 +3,14 @@ import Image from "next/image";
 import { allPosts } from "contentlayer/generated";
 import siteMetadata from "../../data/sitemetadata";
 
+const POSTS_NUM = allPosts.length;
+const TOTAL_WORDS = allPosts
+  .reduce((sum, post) => sum + (post.readingTime?.words ?? 0), 0)
+  .toLocaleString();
+
 export default function AboutMe() {
-  const postsNum = allPosts.length;
-  const totalWords = allPosts
-    .map((post) => post.readingTime.words)
-    .reduce((partialSum, a) => partialSum + a, 0)
-    .toLocaleString();
+  const postsNum = POSTS_NUM;
+  const totalWords = TOTAL_WORDS;
   return (
     <>
       <h2 className="font-semibold prose-h2 pt-4">关于作者</h2>
@@ -18,6 +20,7 @@ export default function AboutMe() {
           alt="Avatar"
           width="100"
           height="100"
+          loading="eager"
           className="rounded-full max-w-md mx-auto drop-shadow-sm mt-6 hover:shadow-sm hover:ring-2 hover:ring-zinc-100 dark:ring-zinc-300 transition transform duration-500"
         />
       </Link>

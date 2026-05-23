@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import yaml from "js-yaml";
 import moment from "moment";
+import PageTransition from "../../components/page-transition";
 
 export async function generateMetadata() {
   return {
@@ -16,7 +17,7 @@ export default async function LinksPage() {
   const microblogs = yaml.load(links);
 
   return (
-    <div  className="max-w-3xl mx-auto py-4">
+    <PageTransition className="max-w-3xl mx-auto py-4">
       <h1 className="text-2xl font-bold pb-8 text-center">微博 Microblog</h1>
       {microblogs
         .sort((a, b) => new Date(b.date) - new Date(a.date))
@@ -30,6 +31,6 @@ export default async function LinksPage() {
             </div>
           </div>
         ))}
-    </div>
+    </PageTransition>
   );
 }

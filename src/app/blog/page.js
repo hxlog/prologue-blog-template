@@ -2,6 +2,8 @@ import { allPosts } from "contentlayer/generated"
 import { compareDesc } from "date-fns";
 import PostsLayout from "./bloglistlayout"
 import siteMetadata from "../../../data/sitemetadata"
+import { tagCounts, sortedTags } from "../../lib/tag-counts"
+import PageTransition from "../../components/page-transition"
 
 export default function Blog() 
 {
@@ -16,10 +18,9 @@ export default function Blog()
   const initialDisplayPosts = posts.slice(0, 10)
 
   return (
-    <div>
-    <PostsLayout posts={posts} pagination={pagination} initialDisplayPosts={initialDisplayPosts} /> 
-    </div>
-    
+    <PageTransition>
+      <PostsLayout posts={posts} pagination={pagination} initialDisplayPosts={initialDisplayPosts} tagCounts={tagCounts} sortedTags={sortedTags} />
+    </PageTransition>
   )
 }
 

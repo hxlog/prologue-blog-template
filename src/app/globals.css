@@ -20,8 +20,26 @@
   }
 }
 
+:root {
+  --nav-height: 3.5rem;
+}
+@media (min-width: 640px) {
+  :root {
+    --nav-height: 4rem;
+  }
+}
+
 html {
   word-break: break-word;
+  scroll-padding-top: calc(var(--nav-height) + 1rem);
+}
+
+.prose :where(h1, h2, h3, h4, h5, h6) {
+  scroll-margin-top: calc(var(--nav-height) + 1rem);
+}
+
+.scroll-offset {
+  scroll-margin-top: calc(var(--nav-height) + 1.5rem);
 }
 
 .katex {

@@ -11,7 +11,6 @@ const data = allPosts
       title: item.title,
       description: item.description,
       slug: item.slug,
-      content: item.body.raw,
       readingTime: item.readingTime,
       tags: item.tags,
       image: item.image,
@@ -32,11 +31,11 @@ const options = {
     },
     {
       name: "description",
-      weight: 0.5,
+      weight: 0.6,
     },
     {
-      name: "content",
-      weight: 1,
+      name: "tags",
+      weight: 0.5,
     },
     {
       name: "slug",

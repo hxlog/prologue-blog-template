@@ -1,15 +1,21 @@
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
+import dynamic from "next/dynamic";
 import { allPosts } from "contentlayer/generated";
 import "katex/dist/katex.min.css";
 import siteMetadata from "../../../../data/sitemetadata";
 import ScrollTopAndComment from "../../../components/scroll";
 import TableofContent from "../../../components/toc";
-import Comments from "../../../components/comments";
 import Link from "next/link";
 import moment from "moment";
 import Image from "next/image";
 import AboutMe from "../../../components/aboutme";
 import { OptimizedHTMLRenderer } from "../../../components/optimized-html-renderer";
+import PageTransition from "../../../components/page-transition";
+
+const Comments = dynamic(() => import("../../../components/comments"), {
+  loading: () => <div className="h-32" aria-hidden />,
+});
 
 
 async function getPostFromParams(params) {
@@ -127,7 +133,7 @@ export default async function PostPage(props) {
         />
       </section>
       <div className="relative xl:grid xl:grid-cols-10 gap-8 mx-auto max-w-7xl">
-        <div className="col-span-8">
+        <PageTransition className="col-span-8">
           <article className="py-8 prose mx-auto dark:prose-invert max-w-7xl">
             <div className="prose-sm select-none">
               <time>{moment(post.publishDate).format("LL")}</time> ·{" "}
@@ -179,7 +185,9 @@ export default async function PostPage(props) {
             </Link>
             <hr />
 
-            <Comments />
+            <Suspense fallback={<div className="h-32" aria-hidden />}>
+              <Comments />
+            </Suspense>
           </article>
           <Link
             href={`https://github.com/${siteMetadata.github}/${siteMetadata.siteRepo}/blob/master/data/content${post.urlslug}.md`}
@@ -219,23 +227,20 @@ export default async function PostPage(props) {
               </div>
             ) : null}
           </div>
-        </div>
+        </PageTransition>
         <div className="col-span-2 mx-auto">
           <div>
           <AboutMe />
           </div>
-          <div className="sticky top-0 pt-10">
+          <div
+            className="sticky pt-10"
+            style={{ top: "calc(var(--nav-height) + 0.5rem)" }}
+          >
             <div className="hidden xl:block">
               <h3 className="text-zinc-600 dark:text-zinc-300 py-4 mt-4">
                 On this page
               </h3>
-              {post.headings.map((heading) => {
-                return (
-                  <div key={heading.text}>
-                    <TableofContent heading={heading} />
-                  </div>
-                );
-              })}
+              <TableofContent headings={post.headings} />
             </div>
 
             <Link href="/">

@@ -1,11 +1,13 @@
 import "./globals.css";
+import dynamic from "next/dynamic";
 import { Providers } from "../components/providers";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
-import ImageLightbox from "../components/ImageLightbox";
 import siteMetadata from "../../data/sitemetadata";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+
+const ImageLightbox = dynamic(() => import("../components/ImageLightbox"));
 
 export const metadata = {
   metadataBase: new URL(siteMetadata.siteUrl),

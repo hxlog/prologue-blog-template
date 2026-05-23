@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import yaml from "js-yaml";
 import FriendLinks from "../../components/friendlinks";
+import PageTransition from "../../components/page-transition";
 
 export async function generateMetadata() {
   return {
@@ -16,8 +17,8 @@ export default async function LinksPage() {
   const data = yaml.load(links);
 
   return (
-    <div>
+    <PageTransition>
       <FriendLinks friends={data} />
-    </div>
+    </PageTransition>
   );
 }
