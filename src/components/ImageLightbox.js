@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Lightbox from 'yet-another-react-lightbox';
+import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 import 'yet-another-react-lightbox/styles.css';
 
 function findImageElement(target) {
@@ -70,10 +71,26 @@ export default function ImageLightbox() {
       slides={slides}
       index={index}
       on={{ view: ({ index }) => setIndex(index) }}
+      plugins={[Zoom]}
+      zoom={{
+        maxZoomPixelRatio: 3.5,
+        zoomInMultiplier: 2,
+        doubleTapDelay: 300,
+        doubleClickDelay: 300,
+        wheelZoomDistanceFactor: 120,
+        pinchZoomDistanceFactor: 120,
+        scrollToZoom: true,
+      }}
+      carousel={{
+        padding: 0,
+        spacing: 8,
+      }}
       render={{
         slideFooter: ({ slide }) =>
           slide.caption ? (
-            <div className="yarl__slide_footer">{slide.caption}</div>
+            <div className="yarl__slide_footer">
+              <p className="yarl__caption_text">{slide.caption}</p>
+            </div>
           ) : null,
       }}
     />

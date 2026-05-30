@@ -20,6 +20,14 @@ export const metadata = {
   publisher: siteMetadata.publishName,
   title: siteMetadata.title,
   description: siteMetadata.description,
+  alternates: {
+    canonical: "/",
+    types: {
+      "application/rss+xml": "/rss",
+      "application/atom+xml": "/atomfeed",
+      "application/feed+json": "/jsonfeed",
+    },
+  },
   formatDetection: {
     email: true,
     address: false,

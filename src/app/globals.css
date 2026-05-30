@@ -78,91 +78,100 @@ html.dark .shiki span {
 
 /* Modern flat style for yet-another-react-lightbox */
 .yarl__container {
-  background: rgba(15, 27, 42, 0.285) !important; /* slate-900/80，深色毛玻璃，适配深色/浅色 */
+  /* Keep the existing glassy backdrop feel, only make it denser for readability */
+  background: rgba(15, 27, 42, 0.44) !important;
   box-shadow: none !important;
+  backdrop-filter: blur(10px);
+}
+html.dark .yarl__container {
+  background: rgba(0, 0, 0, 0.62) !important;
+}
+
+.yarl__slide_image {
+  max-height: 92vh !important;
+  max-width: 96vw !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain !important;
+  margin-bottom: 0 !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.24) !important;
+  background: transparent !important;
+  transition: box-shadow 0.2s ease;
+}
+
+.yarl__slide_footer {
+  position: absolute !important;
+  display: block !important;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 3rem !important;
+  width: min(92vw, 860px);
+  margin: 0 !important;
+  padding: 0.75rem 1rem;
+  color: #0f172a !important;
+  text-align: center;
+  border-radius: 0.75rem;
+  background: rgba(244, 244, 244, 0.92) !important;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
   backdrop-filter: blur(8px);
 }
-.yarl__slide_image {
-  box-shadow: none !important;
-  border-radius: 1rem !important;
+
+html.dark .yarl__slide_footer {
+  color: #f3f4f6 !important;
+  background: rgba(17, 24, 39, 0.86) !important;
+  border: 1px solid rgba(243, 244, 246, 0.14);
 }
 
-/* Lightbox image max height for caption space */
-.yarl__slide_image {
-  max-height: 90vh !important;
-  margin-bottom: 0 !important;
-  border-radius: 0.5rem !important;
-  box-shadow: 0 4px 24px 0 rgba(30,41,59,0.10), 0 1.5px 6px 0 rgba(0,0,0,0.04) !important;
-  background: #fff;
-  transition: box-shadow 0.2s;
-}
-
-/* Lightbox figcaption modern style */
-.yarl__slide_footer {
-  position: static !important;
-  display: block !important;
-  margin: 0.5rem auto 0 auto !important;
-  max-width: 98vw;
-  padding: 0.35rem 0.7rem 0.35rem 0.7rem;
-  color: #222e3a !important;
-  font-size: 0.92rem;
-  text-align: center;
+.yarl__caption_text {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
   font-weight: 500;
-  text-shadow: 0 1px 2px rgba(255,255,255,0.08);
-  border-radius: 0.5rem;
-  background: rgba(255,255,255,0.5) !important;
-  backdrop-filter: blur(2.5px);
-  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.06);
-  line-height: 1.45;
   letter-spacing: 0.01em;
 }
 
 @media (min-width: 640px) {
   .yarl__slide_image {
-    max-height: 92vh !important;
-    border-radius: 0.6rem !important;
+    max-height: 93vh !important;
+    max-width: 94vw !important;
   }
   .yarl__slide_footer {
-    max-width: 80vw;
+    width: min(88vw, 860px);
+    padding: 0.8rem 1.15rem;
+  }
+  .yarl__caption_text {
     font-size: 1rem;
-    padding: 0.5rem 1.2rem 0.5rem 1.2rem;
-    margin-top: 0.8rem !important;
-    border-radius: 0.6rem;
   }
 }
 @media (min-width: 1024px) {
   .yarl__slide_image {
-    max-height: 86vh !important;
-    border-radius: 0.7rem !important;
+    max-height: 94vh !important;
+    max-width: 92vw !important;
   }
   .yarl__slide_footer {
-    max-width: 38vw;
-    font-size: 1.08rem;
-    padding: 0.7rem 2rem 0.7rem 2rem;
-    margin-top: 1.2rem !important;
-    border-radius: 0.7rem;
+    width: min(72vw, 920px);
+    bottom: 1.4rem;
+  }
+  .yarl__caption_text {
+    font-size: 1.05rem;
   }
 }
 
-.yarl__toolbar, .yarl__button {
+.yarl__toolbar,
+.yarl__button {
   background: transparent !important;
   box-shadow: none !important;
 }
 .yarl__button {
-  border-radius: 0.5rem !important;
-  transition: background 0.2s;
+  color: #e5e7eb !important;
+  background: rgba(0, 0, 0, 0.22) !important;
+  border-radius: 9999px !important;
+  transition: background 0.2s ease;
 }
-.yarl__button:active, .yarl__button:focus {
-  background: rgba(255,255,255,0.08) !important;
-}
-
-.yarl__slide_container {
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-.yarl__slide.yarl__flex_center {
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
+.yarl__button:hover,
+.yarl__button:active,
+.yarl__button:focus {
+  background: rgba(0, 0, 0, 0.36) !important;
 }

@@ -1,8 +1,8 @@
 # Prologue Blog
 
-Next.js 16 + Tailwindcss + Contentlayer + Markdown Blog
+Next.js + Tailwindcss + Contentlayer + Markdown/MDX Blog
 
-这是一个由Next.js生态拼凑而生的博客（笔者没有任何底层技术）。
+这是一个由Next.js生态拼凑而生的博客。
 
 ## Features
 
@@ -15,6 +15,7 @@ Next.js 16 + Tailwindcss + Contentlayer + Markdown Blog
 - 自适应黑暗模式
 - 完整的SEO支持，支持Opengraph、JSON-LD和RSS
 - 轻量级的搜索引擎，Fuse.js实现全文搜索和模糊搜索
+- 支持mermaid渲染，需运行
 
 ![Index Screenshot](/public/static/images/Index-Screenshot.jpg)
 
@@ -45,7 +46,7 @@ publishDate: 2022-11-13
 
 lastmod: 2023-07-02
 featured: true
-tags: ["tag1",tag2]
+tags: ["tag1","tag2"]
 image: /static/photos/06.jpg
 imageDesc: This is a static file
 (optional)
