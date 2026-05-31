@@ -79,9 +79,9 @@ html.dark .shiki span {
 /* Modern flat style for yet-another-react-lightbox */
 .yarl__container {
   /* Keep the existing glassy backdrop feel, only make it denser for readability */
-  background: rgba(15, 27, 42, 0.44) !important;
+  background: rgba(243, 243, 243, 0.44) !important;
   box-shadow: none !important;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(14px);
 }
 html.dark .yarl__container {
   background: rgba(0, 0, 0, 0.62) !important;
@@ -97,7 +97,23 @@ html.dark .yarl__container {
   border-radius: 0.75rem !important;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.24) !important;
   background: transparent !important;
-  transition: box-shadow 0.2s ease;
+  will-change: transform;
+  transition:
+    transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.2s ease;
+}
+
+/* Zoom plugin applies scale transform on wrapper, not on image. */
+.yarl__slide_wrapper {
+  will-change: transform;
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .yarl__slide_image,
+  .yarl__slide_wrapper {
+    transition: none !important;
+  }
 }
 
 .yarl__slide_footer {
@@ -153,6 +169,7 @@ html.dark .yarl__slide_footer {
   .yarl__slide_footer {
     width: min(72vw, 920px);
     bottom: 1.4rem;
+    opacity: 0.618;
   }
   .yarl__caption_text {
     font-size: 1.05rem;
@@ -169,9 +186,19 @@ html.dark .yarl__slide_footer {
   background: rgba(0, 0, 0, 0.22) !important;
   border-radius: 9999px !important;
   transition: background 0.2s ease;
+  opacity: 0.236;
 }
 .yarl__button:hover,
 .yarl__button:active,
 .yarl__button:focus {
   background: rgba(0, 0, 0, 0.36) !important;
+  opacity: 0.236;
+}
+
+.yarl__navigation_next, .yarl__navigation_prev {
+  padding: var(--yarl__navigation_button_padding, 5px 5px) !important; 
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.236;
 }

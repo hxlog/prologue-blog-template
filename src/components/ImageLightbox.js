@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 import Lightbox from 'yet-another-react-lightbox';
 import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 import 'yet-another-react-lightbox/styles.css';
@@ -37,16 +38,35 @@ export default function ImageLightbox() {
   const [slides, setSlides] = useState([]);
   const [index, setIndex] = useState(0);
   const imagesRef = useRef([]);
+  const pathname = usePathname();
 
   useEffect(() => {
-    imagesRef.current = Array.from(document.querySelectorAll('img.lightbox-image'));
-  });
+    const refreshImages = () => {
+      imagesRef.current = Array.from(document.querySelectorAll('img.lightbox-image'));
+    };
+
+    refreshImages();
+
+    const rafId = requestAnimationFrame(refreshImages);
+    const timerId = window.setTimeout(refreshImages, 120);
+
+    const root = document.querySelector('main') ?? document.body;
+    const observer = new MutationObserver(() => refreshImages());
+    observer.observe(root, { childList: true, subtree: true });
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.clearTimeout(timerId);
+      observer.disconnect();
+    };
+  }, [pathname]);
 
   useEffect(() => {
     const handleClick = (e) => {
       const img = findImageElement(e.target);
       if (img) {
-        const images = imagesRef.current;
+        const images = Array.from(document.querySelectorAll('img.lightbox-image'));
+        imagesRef.current = images;
         const slides = images.map((el) => ({
           src: el.src,
           alt: el.alt,
@@ -74,10 +94,10 @@ export default function ImageLightbox() {
       plugins={[Zoom]}
       zoom={{
         maxZoomPixelRatio: 3.5,
-        zoomInMultiplier: 2,
+        zoomInMultiplier: 1.65,
         doubleTapDelay: 300,
         doubleClickDelay: 300,
-        wheelZoomDistanceFactor: 120,
+        wheelZoomDistanceFactor: 90,
         pinchZoomDistanceFactor: 120,
         scrollToZoom: true,
       }}
