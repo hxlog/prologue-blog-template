@@ -23,15 +23,28 @@ Next.js + Tailwindcss + Contentlayer + Markdown/MDX Blog
 
 ## Get Started
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fhxlog%2Fprologue.dev)
+Want a clean fork-ready template (no personal posts)? Use the [`starter`](https://github.com/hxlog/prologue.dev/tree/starter) branch.
+
+想直接使用精简模板（不包含作者历史文章）？请使用 [`starter`](https://github.com/hxlog/prologue.dev/tree/starter) 分支。
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fhxlog%2Fprologue.dev%2Ftree%2Fstarter)
 
 ```
+git clone -b starter https://github.com/hxlog/prologue.dev.git my-blog
+cd my-blog
 npm install
+npm run dev
 ```
 
-You can easily customize this site, all configurations are in `/data`,static files are in `/public`
+You can easily customize this site, all configurations are in `/data`, static files are in `/public`.
 
-你可以很容易自定义网站，所有配置文件都在`/data`目录，静态文件存放在`/public`
+你可以很容易自定义网站，所有配置文件都在 `/data` 目录，静态文件存放在 `/public`。
+
+Maintainer sync (`master` → `starter`):
+
+```
+npm run publish
+```
 
 ## Configuration
 

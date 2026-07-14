@@ -6,7 +6,9 @@
     "build": "contentlayer2 build && next build --turbopack",
     "start": "next start",
     "lint": "eslint .",
-    "build:content": "contentlayer2 build"
+    "build:content": "contentlayer2 build",
+    "publish:dry": "node scripts/publish-template.mjs",
+    "publish": "node scripts/publish-template.mjs --publish"
   },
   "dependencies": {
     "@giscus/react": "^3.0.0",

@@ -13,6 +13,9 @@
 # contentlayer
 /.contentlayer
 
+# publish worktree
+/.tmp/
+
 # yarn, not using zero-installs
 .pnp.*
 .yarn/*
