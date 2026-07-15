@@ -47,9 +47,7 @@ function main() {
     commitSnapshot(WORKTREE_DIR);
 
     if (PUBLISH) {
-      const token = resolvePublishToken();
-      const remoteUrl = authenticatedRemoteUrl(token);
-      git(["push", "-f", remoteUrl, `HEAD:${TARGET_BRANCH}`], { cwd: WORKTREE_DIR });
+      pushTemplateRepo(WORKTREE_DIR);
       console.log(`Published template repo: hxlog/prologue-blog-template (${TARGET_BRANCH})`);
     } else {
       console.log(`Template snapshot prepared locally at ${WORKTREE_DIR}`);
