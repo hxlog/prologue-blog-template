@@ -81,8 +81,37 @@ function resolvePublishToken() {
   );
 }
 
-function authenticatedRemoteUrl(token) {
-  return `https://x-access-token:${token}@github.com/hxlog/prologue-blog-template.git`;
+function pushTemplateRepo(cwd) {
+  const token = resolvePublishToken();
+  const remoteUrl = "https://github.com/hxlog/prologue-blog-template.git";
+
+  // Bypass any inherited credential helper (e.g. actions/checkout GITHUB_TOKEN)
+  // and authenticate explicitly with TEMPLATE_REPO_TOKEN / gh auth token.
+  const result = spawnSync(
+    "git",
+    [
+      "-c",
+      "credential.helper=",
+      "-c",
+      `http.extraHeader=AUTHORIZATION: bearer ${token}`,
+      "push",
+      "-f",
+      remoteUrl,
+      `HEAD:${TARGET_BRANCH}`,
+    ],
+    {
+      cwd,
+      encoding: "utf8",
+      env: { ...process.env, GIT_TERMINAL_PROMPT: "0" },
+    }
+  );
+
+  if (result.status !== 0) {
+    const detail = `${result.stderr || ""}\n${result.stdout || ""}`.trim();
+    throw new Error(
+      `git push -f ${remoteUrl} HEAD:${TARGET_BRANCH} failed\n${detail}`.trim()
+    );
+  }
 }
 
 function applyStarterTemplate(worktreeRoot) {
