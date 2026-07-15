@@ -84,16 +84,17 @@ function resolvePublishToken() {
 function pushTemplateRepo(cwd) {
   const token = resolvePublishToken();
   const remoteUrl = "https://github.com/hxlog/prologue-blog-template.git";
+  const basic = Buffer.from(`x-access-token:${token}`, "utf8").toString("base64");
 
   // Bypass any inherited credential helper (e.g. actions/checkout GITHUB_TOKEN)
-  // and authenticate explicitly with TEMPLATE_REPO_TOKEN / gh auth token.
+  // and authenticate with TEMPLATE_REPO_TOKEN via Basic auth (git HTTPS).
   const result = spawnSync(
     "git",
     [
       "-c",
       "credential.helper=",
       "-c",
-      `http.extraHeader=AUTHORIZATION: bearer ${token}`,
+      `http.extraHeader=AUTHORIZATION: basic ${basic}`,
       "push",
       "-f",
       remoteUrl,
