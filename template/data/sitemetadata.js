@@ -7,7 +7,7 @@ const siteMetadata = {
   description: "A content-first blog powered by Next.js and Contentlayer.",
   language: "en-US",
   keywords: ["blog", "nextjs", "contentlayer"],
-  siteUrl: "https://prologuedev-git-starter-hxlogteam.vercel.app/",
+  siteUrl: "https://prologue-blog-demo.prologue.dev/",
   siteRepo: "my-blog",
   repoid: "REPLACE_WITH_GISCUS_REPO_ID",
   categoryid: "REPLACE_WITH_GISCUS_CATEGORY_ID",

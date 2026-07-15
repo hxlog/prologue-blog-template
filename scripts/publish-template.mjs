@@ -6,11 +6,11 @@ import { spawnSync } from "node:child_process";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT = path.resolve(__dirname, "..");
-const WORKTREE_DIR = path.join(ROOT, ".tmp", "starter-worktree");
+const WORKTREE_DIR = path.join(ROOT, ".tmp", "template-worktree");
 const TEMPLATE_ROOT = path.join(ROOT, "template");
 const README_TEMPLATE = path.join(ROOT, "README.template.md");
 const MERMAID_MANIFEST_PATH = "src/lib/feed/mermaid-manifest.json";
-const TARGET_BRANCH = readArg("--branch") || "starter";
+const TARGET_BRANCH = readArg("--branch") || "master";
 const PUBLISH = hasFlag("--publish");
 const ALLOW_DIRTY = hasFlag("--allow-dirty");
 
@@ -30,14 +30,13 @@ function main() {
   mkdirSync(path.dirname(WORKTREE_DIR), { recursive: true });
   safelyRemoveWorktree();
 
-  git(["worktree", "add", "--force", WORKTREE_DIR, "HEAD"], { cwd: ROOT });
+  git(["worktree", "add", "--force", "--detach", WORKTREE_DIR, "HEAD"], { cwd: ROOT });
 
   try {
     if (dirty && ALLOW_DIRTY) {
       overlayDirtyChanges(ROOT, WORKTREE_DIR);
     }
 
-    git(["checkout", "-B", TARGET_BRANCH], { cwd: WORKTREE_DIR });
     applyStarterTemplate(WORKTREE_DIR);
 
     const mermaidManifest = path.join(WORKTREE_DIR, MERMAID_MANIFEST_PATH);
@@ -48,19 +47,48 @@ function main() {
     commitSnapshot(WORKTREE_DIR);
 
     if (PUBLISH) {
-      git(["push", "-f", "origin", TARGET_BRANCH], { cwd: WORKTREE_DIR });
-      console.log(`Published template branch: ${TARGET_BRANCH}`);
+      const token = resolvePublishToken();
+      const remoteUrl = authenticatedRemoteUrl(token);
+      git(["push", "-f", remoteUrl, `HEAD:${TARGET_BRANCH}`], { cwd: WORKTREE_DIR });
+      console.log(`Published template repo: hxlog/prologue-blog-template (${TARGET_BRANCH})`);
     } else {
-      console.log(`Template branch prepared locally: ${TARGET_BRANCH}`);
-      console.log("Use --publish (npm run publish) to push to remote.");
+      console.log(`Template snapshot prepared locally at ${WORKTREE_DIR}`);
+      console.log("Use --publish (npm run publish) to push to hxlog/prologue-blog-template.");
     }
   } finally {
     safelyRemoveWorktree();
   }
 }
 
+function resolvePublishToken() {
+  if (process.env.TEMPLATE_REPO_TOKEN) {
+    return process.env.TEMPLATE_REPO_TOKEN.trim();
+  }
+
+  const ghCandidates = [
+    "gh",
+    path.join(process.env["ProgramFiles"] || "C:\\Program Files", "GitHub CLI", "gh.exe"),
+    path.join(process.env["LocalAppData"] || "", "Programs", "GitHub CLI", "gh.exe"),
+  ];
+
+  for (const ghBin of ghCandidates) {
+    const result = spawnSync(ghBin, ["auth", "token"], { cwd: ROOT, encoding: "utf8" });
+    if (result.status === 0 && result.stdout.trim()) {
+      return result.stdout.trim();
+    }
+  }
+
+  throw new Error(
+    "Missing TEMPLATE_REPO_TOKEN. Set the env var or run `gh auth login` so `gh auth token` works."
+  );
+}
+
+function authenticatedRemoteUrl(token) {
+  return `https://x-access-token:${token}@github.com/hxlog/prologue-blog-template.git`;
+}
+
 function applyStarterTemplate(worktreeRoot) {
-  // Remove maintainer-only files/directories from starter branch.
+  // Remove maintainer-only files from the published template repo.
   rmSync(path.join(worktreeRoot, "template"), { recursive: true, force: true });
   rmSync(path.join(worktreeRoot, "docs"), { recursive: true, force: true });
   rmSync(path.join(worktreeRoot, ".idea"), { recursive: true, force: true });
@@ -68,6 +96,42 @@ function applyStarterTemplate(worktreeRoot) {
   rmSync(path.join(worktreeRoot, "scripts"), { recursive: true, force: true });
   rmSync(path.join(worktreeRoot, ".contentlayer"), { recursive: true, force: true });
   rmSync(path.join(worktreeRoot, ".github", "workflows", "publish-starter.yml"), { force: true });
+  rmSync(path.join(worktreeRoot, ".github", "workflows", "publish-template.yml"), { force: true });
+
+  // Keep CI but only for master.
+  const ciPath = path.join(worktreeRoot, ".github", "workflows", "ci.yml");
+  if (existsSync(ciPath)) {
+    writeFileSync(
+      ciPath,
+      `name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+`
+    );
+  }
 
   // Reset content layer.
   rmSync(path.join(worktreeRoot, "data", "content", "blog"), { recursive: true, force: true });
@@ -103,20 +167,16 @@ function applyStarterTemplate(worktreeRoot) {
     path.join(worktreeRoot, "data", "headerNavLinks.js")
   );
 
-  // Reset static assets for starter.
+  // Reset static assets for template.
   rmSync(path.join(worktreeRoot, "public", "static"), { recursive: true, force: true });
   mkdirSync(path.join(worktreeRoot, "public", "static"), { recursive: true });
   cpSync(path.join(TEMPLATE_ROOT, "public", "static"), path.join(worktreeRoot, "public", "static"), {
     recursive: true,
   });
 
-  // Remove stale secondary static directory if present.
   rmSync(path.join(worktreeRoot, "src", "public"), { recursive: true, force: true });
 
-  // Use starter README on the published branch.
   copyFile(README_TEMPLATE, path.join(worktreeRoot, "README.md"));
-
-  // Drop maintainer publish scripts from starter package.json.
   patchStarterPackageJson(worktreeRoot);
 }
 
@@ -132,6 +192,8 @@ function patchStarterPackageJson(worktreeRoot) {
 }
 
 function commitSnapshot(cwd) {
+  // Branch from current HEAD (prologue master tip) so history stays linear like the old starter flow.
+  git(["checkout", "-B", "template-publish"], { cwd });
   git(["add", "-A"], { cwd });
   const check = spawnSync("git", ["diff", "--cached", "--quiet"], { cwd, encoding: "utf8" });
   if (check.status === 0) {
@@ -139,7 +201,7 @@ function commitSnapshot(cwd) {
     return;
   }
 
-  git(["commit", "-m", "chore: sync starter template snapshot"], { cwd });
+  git(["commit", "-m", "chore: sync template snapshot"], { cwd });
 }
 
 function overlayDirtyChanges(sourceRoot, worktreeRoot) {

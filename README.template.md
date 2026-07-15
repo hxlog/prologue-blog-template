@@ -1,19 +1,47 @@
-# Prologue Starter Template
+# Prologue Blog Template
 
-A minimal, content-first blog starter powered by Next.js 16 + Contentlayer2.
+A ready-to-use, content-first blog **template** powered by Next.js 16 + Contentlayer2.
 
-This branch is designed for forking. It keeps the full blog engine (`src` and build config) while shipping only starter content in `data` and `public`.
+This is **not** the author's personal blog. It ships a minimal demo so you can Use this template / Deploy and start writing by editing only `/data` and `/public`.
+
+Live demo: https://prologue-blog-demo.prologue.dev/
+
+## Features
+
+- Content Focused, Contentlayer + MD/MDX
+- Adaptive dark mode
+- Full SEO, Opengraph + JSON-LD + RSS
+- Lightweight search engine, powered by Fuse.js
+- Mermaid diagrams
+
+- 专注于内容创作，支持 markdown/mdx
+- 自适应黑暗模式
+- 完整的 SEO 支持，支持 Opengraph、JSON-LD 和 RSS
+- 轻量级的搜索引擎，Fuse.js 实现全文搜索和模糊搜索
+- 支持 mermaid 渲染
+
+![Index Screenshot](./public/static/images/Index-Screenshot.jpg)
+
+![Post Screenshot](./public/static/images/Post-Screenshot.jpg)
 
 ## Quick Start
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fhxlog%2Fprologue-blog-template)
+
+Or use **Use this template** on GitHub, then:
+
 ```bash
-git clone -b starter https://github.com/hxlog/prologue.dev.git my-blog
+git clone https://github.com/hxlog/prologue-blog-template.git my-blog
 cd my-blog
 npm install
 npm run dev
 ```
 
 Open `http://localhost:3000`.
+
+You can customize this site by editing `/data` (config + posts) and `/public` (static files).
+
+你可以很容易自定义网站：配置与文章在 `/data`，静态文件在 `/public`。
 
 ## 5 Things To Change First
 
@@ -34,32 +62,20 @@ npm run start
 npm run build:content
 ```
 
-## Branch Strategy
-
-- `master`: full personal blog content
-- `starter`: minimal template for forks
-
-The maintainer syncs `starter` from `master` with:
-
-```bash
-npm run publish
-```
-
 ## Keeping Your Fork Updated
 
-If your repo is forked from this template:
+Engine updates are published to this template repo from [prologue.dev](https://github.com/hxlog/prologue.dev).
 
 ```bash
-git remote add upstream https://github.com/hxlog/prologue.dev.git
+git remote add upstream https://github.com/hxlog/prologue-blog-template.git
 git fetch upstream
-git checkout starter
-git merge upstream/starter
+git merge upstream/master
 ```
 
-If you already rewrote your own `data` content, prefer syncing engine files:
+If you already rewrote your own content:
 
-- Keep your local `data/**` and `public/static/**` content
-- Take upstream updates from `src/**` and config files
+- Keep your local `data/**` and `public/**`
+- Take upstream updates from `src/**` and build config
 
 ## License
 
