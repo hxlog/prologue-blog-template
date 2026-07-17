@@ -1,22 +1,21 @@
 const siteMetadata = {
-  title: "Prologue 序章",
-  author: "槐序",
-  authorDesc:"梦想成为自由职业者",
+  title: "My Prologue Blog",
+  author: "Your Name",
+  authorDesc: "Write a short bio here",
   publishName: "Prologue",
   headerTitle: "What's past is prologue",
-  description:
-    "对当下的反思和批判",
-  language: "zh-CN",
-  keywords:['prologue', '序章','槐序'],
-  siteUrl: "https://prologue.dev",
-  siteRepo: "prologue.dev",
-  repoid:"R_kgDOHl4HGg",
-  categoryid: "DIC_kwDOHl4HGs4CP_Jc",
-  favicon: "/static/favicons/favicon.ico",
-  avatar: "/static/favicons/avatar.png",
-  cover: "/static/favicons/cover.png",
-  email: "author@prologue.dev",
-  github: "hxlog"
+  description: "A content-first blog powered by Next.js and Contentlayer.",
+  language: "en-US",
+  keywords: ["blog", "nextjs", "contentlayer"],
+  siteUrl: "https://prologue-blog-demo.prologue.dev/",
+  siteRepo: "my-blog",
+  repoid: "REPLACE_WITH_GISCUS_REPO_ID",
+  categoryid: "REPLACE_WITH_GISCUS_CATEGORY_ID",
+  favicon: "/favicon.svg",
+  avatar: "/static/favicons/avatar-template.svg",
+  cover: "/static/favicons/cover-template.svg",
+  email: "hello@example.com",
+  github: "your-github-id",
 };
 
 module.exports = siteMetadata;
