@@ -26,16 +26,15 @@ function cascadeTotalMs(count) {
 export default function HomePage({ articles, mostCommonTag }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [visibleCount, setVisibleCount] = useState(8);
+  const [firstNewIndex, setFirstNewIndex] = useState(8);
   const [tabIndex, setTabIndex] = useState(0);
 
   const tabRefs = useRef([]);
   const [tabWidths, setTabWidths] = useState([]);
   const [tabPosition, setTabPosition] = useState(0);
 
-  const prevVisibleCount = useRef(8);
   const firstNewCardRef = useRef(null);
   const searchWrapRef = useRef(null);
 
@@ -44,7 +43,6 @@ export default function HomePage({ articles, mostCommonTag }) {
       const t = setTimeout(() => {
         setSearchQuery("");
         setDebouncedQuery("");
-        setSearchResults([]);
         setIsSearching(false);
       }, 0);
       return () => clearTimeout(t);
@@ -87,14 +85,11 @@ export default function HomePage({ articles, mostCommonTag }) {
     return () => clearTimeout(t);
   }, [searchQuery]);
 
-  useEffect(() => {
+  const searchResults = useMemo(() => {
     const query = debouncedQuery.trim();
-    if (!query) {
-      setSearchResults([]);
-      return;
-    }
+    if (!query) return [];
     const lower = query.toLowerCase();
-    const results = articles.filter((article) => {
+    return articles.filter((article) => {
       if (article.draft) return false;
       return (
         article.title.toLowerCase().includes(lower) ||
@@ -103,7 +98,6 @@ export default function HomePage({ articles, mostCommonTag }) {
         (article.tags || []).some((tag) => tag.toLowerCase().includes(lower))
       );
     });
-    setSearchResults(results);
   }, [debouncedQuery, articles]);
 
   const featuredArticles = useMemo(
@@ -112,23 +106,20 @@ export default function HomePage({ articles, mostCommonTag }) {
   );
 
   useLayoutEffect(() => {
-    if (visibleCount === prevVisibleCount.current) return;
-    const newCount = visibleCount - prevVisibleCount.current;
+    const newCount = visibleCount - firstNewIndex;
+    if (newCount <= 0) return;
     const node = firstNewCardRef.current;
-    if (node) {
-      const totalMs = cascadeTotalMs(newCount);
-      const timer = setTimeout(() => {
-        const top =
-          node.getBoundingClientRect().top +
-          window.pageYOffset -
-          window.innerHeight * 0.386;
-        window.scrollTo({ top, behavior: "smooth" });
-      }, totalMs);
-      prevVisibleCount.current = visibleCount;
-      return () => clearTimeout(timer);
-    }
-    prevVisibleCount.current = visibleCount;
-  }, [visibleCount]);
+    if (!node) return;
+    const totalMs = cascadeTotalMs(newCount);
+    const timer = setTimeout(() => {
+      const top =
+        node.getBoundingClientRect().top +
+        window.pageYOffset -
+        window.innerHeight * 0.386;
+      window.scrollTo({ top, behavior: "smooth" });
+    }, totalMs);
+    return () => clearTimeout(timer);
+  }, [visibleCount, firstNewIndex]);
 
   const filteredArticles = (filter) => {
     const featuredSlugs = featuredArticles.map((article) => article.slug);
@@ -151,8 +142,6 @@ export default function HomePage({ articles, mostCommonTag }) {
     }
     return baseArticles.slice(0, visibleCount);
   };
-
-  const firstNewIndex = prevVisibleCount.current;
 
   const renderArticleCard = (article, index, mode) => {
     const isStatic = mode === "static";
@@ -239,11 +228,16 @@ export default function HomePage({ articles, mostCommonTag }) {
   const renderSearchArticles = (list) =>
     list.map((article, index) => renderArticleCard(article, index, "search"));
 
+  const loadMore = () => {
+    setFirstNewIndex(visibleCount);
+    setVisibleCount((prev) => prev + 8);
+  };
+
   const loadMoreButton = (filter) =>
     filteredArticles(filter).length >= visibleCount && (
       <div className="flex justify-center mt-6">
         <button
-          onClick={() => setVisibleCount((prev) => prev + 8)}
+          onClick={loadMore}
           className="px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 dark:bg-zinc-950 rounded-md hover:bg-zinc-50 dark:hover:bg-zinc-900 transition"
         >
           加载更多  

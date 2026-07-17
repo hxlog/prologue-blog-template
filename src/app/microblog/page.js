@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import yaml from "js-yaml";
+import { load } from "js-yaml";
 import moment from "moment";
 import PageTransition from "../../components/page-transition";
 
@@ -14,7 +14,7 @@ export async function generateMetadata() {
 export default async function LinksPage() {
   const filePath = path.join(process.cwd(), "data", "microblog.yaml");
   const links = fs.readFileSync(filePath, "utf8");
-  const microblogs = yaml.load(links);
+  const microblogs = load(links);
 
   return (
     <PageTransition className="max-w-3xl mx-auto py-4">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { allPosts } from "contentlayer/generated";
 import PostCard from "./postcard";
 
@@ -44,24 +44,27 @@ const options = {
   ],
   threshold: 0.0,
 };
+
 const SearchBar = () => {
   const [query, updateQuery] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-
-  const getSearchResults = async (query) => {
-    const Fuse = (await import("fuse.js")).default;
-    const response = new Fuse(data, options);
-    const results = response.search(query, { limit: 5 });
-    setSearchResults(results);
-  };
+  const [fuse, setFuse] = useState(null);
 
   useEffect(() => {
-    if (query.length >= 2) {
-      getSearchResults(query);
-    } else {
-      setSearchResults([]);
-    }
-  }, [query]);
+    let cancelled = false;
+    import("fuse.js").then((mod) => {
+      if (!cancelled) {
+        setFuse(new mod.default(data, options));
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const searchResults = useMemo(() => {
+    if (!fuse || query.length < 2) return [];
+    return fuse.search(query, { limit: 5 });
+  }, [fuse, query]);
 
   return (
     <div className="max-w-2xl mx-auto relative">
