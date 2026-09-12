@@ -1,11 +1,10 @@
-# Prologue Blog
+# Prologue Blog Template
 
-Next.js 16 + React 19 + Tailwindcss V4 + Contentlayer2 + Markdown/MDX Blog
+A ready-to-use, content-first blog **template** powered by Next.js 16 + Contentlayer2.
 
-A content-first blog starter built with Next.js 16, Contentlayer2, and Markdown.
+This is **not** the author's personal blog. It ships a minimal demo so you can Use this template / Deploy and start writing by editing only `/data` and `/public`.
 
-**Prologue Blog 是一个面向内容创作者与开发者的现代博客模板：支持 Markdown/MDX、公式、Mermaid、Feed、SEO、搜索与暗黑模式，并保持简单的配置驱动体验，适合希望快速搭建个人博客、知识库或内容型网站的开发者与创作者。**
-
+Live demo: https://prologue-blog-demo.prologue.dev/
 
 ## Features
 
@@ -13,6 +12,7 @@ A content-first blog starter built with Next.js 16, Contentlayer2, and Markdown.
 - Adaptive dark mode
 - Full SEO, Opengraph + JSON-LD + RSS
 - Lightweight search engine, powered by Fuse.js
+- Mermaid diagrams
 
 - 专注于内容创作，支持 markdown/mdx
 - 自适应黑暗模式
@@ -20,30 +20,15 @@ A content-first blog starter built with Next.js 16, Contentlayer2, and Markdown.
 - 轻量级的搜索引擎，Fuse.js 实现全文搜索和模糊搜索
 - 支持 mermaid 渲染
 
-博客链接：https://prologue.dev
+![Index Screenshot](./public/static/images/Index-Screenshot.jpg)
 
-## Preview
+![Post Screenshot](./public/static/images/Post-Screenshot.jpg)
 
-![首页与文章页](./public/static/images/ss_pc.png)
-
-首页与文章页
-
-![文章搜索与评论功能](./public/static/images/ss_search_comment.png)
-
-文章搜索与评论功能
-
-![手机端首页、个人页、友链页](./public/static/images/ss_phone.png)
-
-手机端首页、个人页、友链页
-
-
-## Get Started
-
-想直接搭建自己的博客？可以直接 Fork 我的博客进行二次开发，也可以使用独立 Demo 模板仓库（最小版本，不含作者历史文章）：
-
-**[hxlog/prologue-blog-template](https://github.com/hxlog/prologue-blog-template)**（GitHub Template）
+## Quick Start
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fhxlog%2Fprologue-blog-template)
+
+Or use **Use this template** on GitHub, then:
 
 ```bash
 git clone https://github.com/hxlog/prologue-blog-template.git my-blog
@@ -52,41 +37,46 @@ npm install
 npm run dev
 ```
 
-You can easily customize the template site: all configurations are in `/data`, static files are in `/public`.
+Open `http://localhost:3000`.
 
-你可以很容易自定义网站，所有配置文件都在 `/data` 目录，静态文件存放在 `/public`。
+You can customize this site by editing `/data` (config + posts) and `/public` (static files).
 
-- 博客文章和页面的Markdown静态文件分别存放在`/data/content/blog`和`/data/content/pages`。
+你可以很容易自定义网站：配置与文章在 `/data`，静态文件在 `/public`。
 
-- 博客的基本元数据、友链、微博、tag标签关联存放在`sitemetadata.js`, `links.yaml`, `microblog.yaml`, `taglabel.js`
+## 5 Things To Change First
 
+1. `data/sitemetadata.js`
+   - `title`, `author`, `description`, `siteUrl`
+   - `github`, `siteRepo`, `repoid`, `categoryid` (for Giscus)
+2. `data/headerNavLinks.js`
+3. `data/content/pages/about.md`
+4. `data/content/blog/hello-prologue.md`
+5. `data/microblog.yaml` and `data/links.yaml`
 
-## Configuration
+## Common Commands
 
-Post Frontmatter
-
-```yaml
----
-title: title
-description: description
-publishDate: 2022-11-13
-(required)
-
-lastmod: 2023-07-02
-featured: true
-tags: ["tag1","tag2"]
-image: /static/photos/06.jpg
-imageDesc: This is a static file
-(optional)
----
+```bash
+npm run dev
+npm run build
+npm run start
+npm run build:content
 ```
 
-Page Frontmatter
+## Keeping Your Fork Updated
 
-```yaml
-title: title
-description: description
-(required)
+Engine updates are published to this template repo from [prologue.dev](https://github.com/hxlog/prologue.dev).
+
+```bash
+git remote add upstream https://github.com/hxlog/prologue-blog-template.git
+git fetch upstream
+git merge upstream/master
 ```
 
-推荐配合 Obsidian 在 /Data 打开 Vault 编辑，YAML 和 FrontMatter 会以结构化表格形式渲染，方便作为知识库进行交互。
+If you already rewrote your own content:
+
+- Keep your local `data/**` and `public/**`
+- Take upstream updates from `src/**` and build config
+
+## License
+
+Please add a license file suitable for your own project before public release.
