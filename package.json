@@ -6,9 +6,7 @@
     "dev": "node scripts/build-search-index.mjs && next dev --turbopack",
     "build": "node scripts/build-search-index.mjs && next build --turbopack",
     "start": "next start",
-    "lint": "eslint .",
-    "check": "node scripts/check.mjs",
-    "publish": "node scripts/publish-template.mjs"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@giscus/react": "^3.1.0",

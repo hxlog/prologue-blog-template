@@ -2,29 +2,35 @@
  * Tag display labels.
  *
  * Canonical tag slugs stay English (stable URLs, feeds, analytics — raw
- * `/tags/${tag}` interpolation assumes ASCII), while the UI renders Chinese
- * labels. Single source of truth for every tag consumer: cards, tag chips,
- * tag sidebar, tag page headers, the Fuse search index and related posts.
+ * `/tags/${tag}` interpolation assumes ASCII), while the UI renders labels from
+ * this map. Single source of truth for every tag consumer: cards, tag chips,
+ * the tag sidebar, tag page headers, the Fuse search index and related posts.
+ *
+ * English by default so the starter reads coherently out of the box. A
+ * non-English site can translate the values freely — translate Chinese, or any
+ * other language. The KEYS are the tag slugs used in post frontmatter and in
+ * `/tags/<slug>` URLs, so those should stay ASCII; only the values change.
  */
 const tagLabels = {
-  Economics: "经济学",
-  Finance: "金融",
-  Quant: "数据科学",
-  Crypto: "加密货币",
-  AI: "人工智能",
-  Sociology: "社会学",
-  Capitalism: "资本主义",
-  Education: "教育",
-  Inequality: "不平等",
-  Politics: "政治",
-  Philosophy: "哲学",
-  Technology: "技术",
-  Meta: "随笔",
-  Translations: "翻译",
-  Gender: "性别",
+  Economics: "Economics",
+  Finance: "Finance",
+  Quant: "Data Science",
+  Crypto: "Crypto",
+  AI: "AI",
+  Sociology: "Sociology",
+  Capitalism: "Capitalism",
+  Education: "Education",
+  Inequality: "Inequality",
+  Politics: "Politics",
+  Philosophy: "Philosophy",
+  Technology: "Technology",
+  Meta: "Notes",
+  Translations: "Translations",
+  Gender: "Gender",
+  starter: "Starter",
+  hello: "Hello",
 };
 
-/** Chinese label for a tag slug, falling back to the slug itself. */
 export function tagLabel(tag) {
   return tagLabels[tag] || tag;
 }
