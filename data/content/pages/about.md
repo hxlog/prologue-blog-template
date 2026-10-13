@@ -1,22 +1,24 @@
 ---
-title: 关于作者
-description: 作者槐序，00后，梦想成为自由职业者
-avatar: /static/favicons/avatar.png
+title: 关于
+description: 模板的个人简介页示例。
 ---
 
-## 关于作者
+## 关于
 
-**槐序** — 00 后 / INFJ / 少数派 / 梦想成为自由职业者
+![头像](/static/favicons/avatar-template.svg)
 
-笔者曾在券商自营做风险管理，现从事金融数据分析与开发。
+**你的名字** — 写一句自我介绍。这一页是纯 markdown，可以直接改文案，也可以加图片和链接。
 
-这里有关于关于 TA：
+`public/static/favicons/` 下的头像换成你自己的，或者删掉上面这一行。
 
-- 在经济与金融专业领域的深度长文和见解
-- 读书分享，社会科学领域，读书笔记、文献综述、交流心得
-- 金融科技产品全栈开发
-- AI 应用与模型交互的实践与经验分享
-- 纪实摄影
-- 二次元作品鉴赏
+## 订阅
 
-争取工作之余还能保持更新，提高写作水平，欢迎 [RSS 订阅](/rss) 和公众号订阅「槐序的序章」。
+这个站点同时提供三种订阅格式，选一个粘进你的阅读器即可：
+
+- [RSS2 Feed](/rss)
+- [ATOM Feed](/atomfeed)
+- [JSON Feed](/jsonfeed)
+
+## 这个站点是怎么搭的
+
+Next.js App Router + React 19 + Tailwind CSS v4，内容全部是 `data/` 下的 markdown 文件，没有数据库，也没有后台。
