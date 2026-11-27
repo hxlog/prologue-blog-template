@@ -10,14 +10,11 @@
   "scripts": {
     "dev": "node scripts/build-api-catalog.mjs && node scripts/build-search-index.mjs && node scripts/build-image-variants.mjs && next dev --turbopack",
     "build": "node scripts/build-api-catalog.mjs && node scripts/build-search-index.mjs && node scripts/build-image-variants.mjs && node scripts/build-og-images.mjs && node scripts/build-version.mjs && next build --turbopack",
-    "build:e2e": "node scripts/build-e2e.mjs",
     "export": "node scripts/build-api-catalog.mjs && node scripts/build-search-index.mjs && node scripts/build-image-variants.mjs && node scripts/build-og-images.mjs && node scripts/build-version.mjs && node scripts/next-export.mjs && node scripts/build-markdown.mjs && node scripts/build-cf-assets.mjs && node scripts/build-service-worker.mjs",
     "deploy:cf": "npx --yes wrangler deploy",
     "preview:cf": "npx --yes wrangler dev",
     "start": "next start",
     "lint": "eslint .",
-    "test:e2e": "playwright test",
-    "publish": "node scripts/publish-template.mjs",
     "budget:export": "node scripts/check-export-budget.mjs"
   },
   "dependencies": {

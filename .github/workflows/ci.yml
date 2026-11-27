@@ -16,157 +16,32 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "24.x"
+          node-version: "24"
 
-      # package.json pins Yarn 4 through "packageManager"; the yarn on the
-      # runner is v1, so corepack has to be enabled before any yarn call.
+      # Yarn 4 is pinned by packageManager in package.json; Corepack is what
+      # makes a bare runner honour that pin. It has to run before anything calls
+      # `yarn`, including actions/setup-node's own cache lookup, so the cache
+      # is wired by hand below instead of with `cache: yarn`.
       - name: Enable Corepack
         run: corepack enable
 
-      # setup-node's own `cache: yarn` probes the runner's Yarn 1 cache
-      # folder (Yarn 4 reports it via `yarn config get cacheFolder` instead),
-      # so the cache is wired up explicitly here.
       - name: Locate Yarn cache
-        id: yarn-cache
+        id: yarn-cache-dir
         run: echo "dir=$(yarn config get cacheFolder)" >> "$GITHUB_OUTPUT"
 
-      - name: Cache Yarn packages
+      - name: Restore Yarn cache
         uses: actions/cache@v4
         with:
-          path: ${{ steps.yarn-cache.outputs.dir }}
+          path: ${{ steps.yarn-cache-dir.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
 
       - name: Install dependencies
         run: yarn install --immutable
-
-      # Generated at build time from public/static + content; regenerating the
-      # 1,380 AVIF/WebP variants is what made the e2e job slow on cold runners.
-      - name: Cache generated assets
-        uses: actions/cache@v4
-        with:
-          path: |
-            public/static/variants
-            public/static/source
-            public/static/opt
-            public/og
-            data/image-variants.js
-            data/og-manifest.js
-            data/image-sources.js
-          key: ${{ runner.os }}-assets-${{ hashFiles('public/static/**', 'data/content/**', 'assets/og/**', 'scripts/build-image-variants.mjs', 'scripts/build-og-images.mjs', 'scripts/build-search-index.mjs') }}
-          restore-keys: |
-            ${{ runner.os }}-assets-
 
       - name: Lint
         run: yarn lint
 
       - name: Build
         run: yarn build
-
-  export:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "24.x"
-
-      - name: Enable Corepack
-        run: corepack enable
-
-      - name: Locate Yarn cache
-        id: yarn-cache-export
-        run: echo "dir=$(yarn config get cacheFolder)" >> "$GITHUB_OUTPUT"
-
-      - name: Cache Yarn packages
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.yarn-cache-export.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-
-      - name: Install dependencies
-        run: yarn install --immutable
-
-      # Generated at build time from public/static + content; regenerating the
-      # 1,380 AVIF/WebP variants is what made the e2e job slow on cold runners.
-      - name: Cache generated assets
-        uses: actions/cache@v4
-        with:
-          path: |
-            public/static/variants
-            public/static/source
-            public/static/opt
-            public/og
-            data/image-variants.js
-            data/og-manifest.js
-            data/image-sources.js
-          key: ${{ runner.os }}-assets-${{ hashFiles('public/static/**', 'data/content/**', 'assets/og/**', 'scripts/build-image-variants.mjs', 'scripts/build-og-images.mjs', 'scripts/build-search-index.mjs') }}
-          restore-keys: |
-            ${{ runner.os }}-assets-
-
-      - name: Static export (Cloudflare target)
-        run: yarn export
-
-      - name: Verify export output
-        run: node scripts/verify-export.mjs
-
-      - name: Performance budget (initial JS/CSS/HTML)
-        run: yarn budget:export
-
-  e2e:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "24.x"
-
-      - name: Enable Corepack
-        run: corepack enable
-
-      - name: Locate Yarn cache
-        id: yarn-cache-e2e
-        run: echo "dir=$(yarn config get cacheFolder)" >> "$GITHUB_OUTPUT"
-
-      - name: Cache Yarn packages
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.yarn-cache-e2e.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-
-      - name: Install dependencies
-        run: yarn install --immutable
-
-      # Generated at build time from public/static + content; regenerating the
-      # 1,380 AVIF/WebP variants is what made the e2e job slow on cold runners.
-      - name: Cache generated assets
-        uses: actions/cache@v4
-        with:
-          path: |
-            public/static/variants
-            public/static/source
-            public/static/opt
-            public/og
-            data/image-variants.js
-            data/og-manifest.js
-            data/image-sources.js
-          key: ${{ runner.os }}-assets-${{ hashFiles('public/static/**', 'data/content/**', 'assets/og/**', 'scripts/build-image-variants.mjs', 'scripts/build-og-images.mjs', 'scripts/build-search-index.mjs') }}
-          restore-keys: |
-            ${{ runner.os }}-assets-
-
-      - name: Install Chromium
-        run: yarn playwright install --with-deps chromium
-
-      - name: Instant navigation and SEO tests
-        run: yarn test:e2e

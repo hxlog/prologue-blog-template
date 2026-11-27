@@ -1,31 +1,14 @@
 {
-  // Cloudflare Workers deploy target for the static export.
-  //
-  // A thin Worker provides Markdown for Agents content negotiation on the
-  // Free plan (the native content_converter setting requires Pro+). Every
-  // request goes Worker-first so an Accept: text/markdown request can be
-  // answered from out/__markdown; all other requests are served unchanged by
-  // env.ASSETS. Static HTML/browser behaviour is untouched.
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "prologue-blog",
   "main": "worker/index.js",
   "compatibility_date": "2026-11-26",
-  // No workers.dev hostname in production: both public hostnames are Custom
-  // Domains. The preview hostname (cf.prologue.dev) was removed at cutover.
-  "workers_dev": false,
-  "preview_urls": false,
-  "routes": [
-    { "pattern": "prologue.dev", "custom_domain": true },
-    { "pattern": "www.prologue.dev", "custom_domain": true }
-  ],
+  "workers_dev": true,
   "assets": {
     "directory": "./out",
     "binding": "ASSETS",
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page",
     "run_worker_first": true
-  },
-  "observability": {
-    "enabled": true
   }
 }
